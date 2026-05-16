@@ -3,281 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investissement & Avenir | Portail Institutionnel</title>
+    <title>Portail Institutionnel | Investissement & Avenir</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --gold: #c5a059; --dark: #000; }
-        body { background-color: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-        .gold-btn { background: linear-gradient(135deg, #c5a059 0%, #ecd4a4 100%); color: #000; font-weight: 800; border: none; transition: 0.3s; }
-        .gold-btn:hover { opacity: 0.8; transform: scale(0.98); }
-        .glass { background: #111; border: 1px solid #333; backdrop-filter: blur(10px); }
-        .page { display: none; min-height: 90vh; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        input { background: #000 !important; border: 1px solid #333 !important; color: white !important; }
+        :root { --gold: #c5a059; --dark: #0a0b0c; }
+        body { background-color: var(--dark); color: #fff; font-family: 'Inter', sans-serif; }
+        .gold-btn { background: linear-gradient(135deg, #c5a059 0%, #ecd4a4 100%); color: #000; font-weight: 800; border: none; }
+        .glass { background: rgba(20, 22, 25, 0.95); border: 1px solid rgba(197, 160, 89, 0.2); }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body onload="checkSession()">
 
-<nav class="p-4 border-b border-white/10 flex justify-between items-center bg-black sticky top-0 z-50">
+<nav class="p-4 border-b border-white/5 glass sticky top-0 z-50 flex justify-between items-center">
     <div class="flex items-center gap-2">
-        <div class="w-8 h-8 gold-btn rounded flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
-        <span class="font-bold uppercase tracking-widest text-sm">Investissement <span class="text-[#c5a059]">&</span> Avenir</span>
+        <div class="w-8 h-8 gold-btn rounded flex items-center justify-center"><i class="fa-solid fa-building-columns"></i></div>
+        <h1 class="text-sm font-black uppercase italic tracking-tighter">Investissement <span class="text-gold">&</span> Avenir</h1>
     </div>
-    <div id="nav-user" class="hidden text-right">
-        <p id="nav-id" class="text-[9px] text-[#c5a059] font-mono m-0"></p>
-        <p id="nav-name" class="text-[10px] font-bold uppercase m-0"></p>
+    <div id="user-tag" class="hidden text-right">
+        <p id="tag-name" class="text-[10px] font-bold uppercase text-gold m-0"></p>
+        <p class="text-[8px] text-gray-500 m-0">SESSION ACTIVE</p>
     </div>
 </nav>
 
 <div class="container mx-auto px-4 py-8">
 
-    <div id="step-home" class="page active text-center mt-10">
-        <h1 class="text-3xl font-black italic uppercase mb-4">Espace Client <br><span class="text-[#c5a059]">Institutionnel</span></h1>
-        <p class="text-gray-500 text-xs mb-10">Accédez à la gestion de vos actifs de haute performance.</p>
-        <div class="max-w-md mx-auto space-y-4">
-            <button onclick="nav('step-register')" class="gold-btn w-full py-5 rounded-2xl uppercase text-sm tracking-widest">Ouvrir un compte</button>
-            <button onclick="nav('step-login')" class="bg-white/5 border border-white/10 w-full py-5 rounded-2xl uppercase font-bold text-sm">Se connecter</button>
-        </div>
-    </div>
-
-    <div id="step-register" class="page max-w-md mx-auto glass p-8 rounded-3xl">
-        <h2 class="text-xl font-bold text-[#c5a059] uppercase mb-6 text-center italic">Nouvelle Adhésion</h2>
+    <div id="page-register" class="page max-w-md mx-auto glass p-8 rounded-[2rem] mt-10">
+        <h2 class="text-2xl font-black text-gold uppercase mb-6 italic text-center">Création de compte</h2>
         <div class="space-y-4">
-            <input type="text" id="reg-nom" placeholder="Votre Nom" class="w-full p-4 rounded-xl outline-none">
-            <input type="text" id="reg-prenom" placeholder="Votre Prénom" class="w-full p-4 rounded-xl outline-none">
-            <p class="text-[10px] text-gray-500 italic">En cliquant sur suivant, vous acceptez nos conditions de gestion institutionnelle.</p>
-            <button onclick="createAccount()" class="gold-btn w-full py-4 rounded-xl uppercase mt-4">Obtenir mes accès</button>
+            <input type="text" id="reg-nom" placeholder="Nom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none">
+            <input type="text" id="reg-prenom" placeholder="Prénom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none">
+            <button onclick="startSession()" class="gold-btn w-full py-4 rounded-xl uppercase mt-4">Accéder au tableau de bord</button>
         </div>
     </div>
 
-    <div id="step-creds" class="page max-w-md mx-auto glass p-8 rounded-3xl text-center">
-        <i class="fa-solid fa-shield-halved text-4xl text-[#c5a059] mb-4"></i>
-        <h2 class="text-lg font-bold text-white uppercase mb-2">Accès Sécurisés Générés</h2>
-        <p class="text-xs text-gray-500 mb-6">Notez précieusement ces codes, ils sont uniques.</p>
-        <div class="bg-black p-6 rounded-2xl border border-[#c5a059]/30 space-y-4 mb-8">
-            <div><p class="text-[9px] text-gray-500 uppercase">Identifiant Client</p><p id="out-id" class="text-2xl font-mono text-[#c5a059] font-black"></p></div>
-            <div><p class="text-[9px] text-gray-500 uppercase">Code Personnel</p><p id="out-pass" class="text-2xl font-mono text-white font-black"></p></div>
-        </div>
-        <button onclick="nav('step-login')" class="gold-btn w-full py-4 rounded-xl uppercase">Passer à la connexion</button>
-    </div>
-
-    <div id="step-login" class="page max-w-md mx-auto glass p-8 rounded-3xl">
-        <h2 class="text-xl font-bold text-[#c5a059] uppercase mb-8 text-center italic">Authentification</h2>
-        <div class="space-y-4">
-            <input type="text" id="log-id" placeholder="Identifiant IA-2026-..." class="w-full p-4 rounded-xl font-mono">
-            <input type="password" id="log-pass" placeholder="Code Personnel" class="w-full p-4 rounded-xl">
-            <button onclick="login()" class="gold-btn w-full py-4 rounded-xl uppercase mt-4">Entrer dans l'espace</button>
-        </div>
-    </div>
-
-    <div id="step-dash" class="page">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div id="page-dash" class="page">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="md:col-span-1 space-y-6">
-                <div class="glass p-8 rounded-3xl">
-                    <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Solde Total</p>
-                    <p class="text-4xl font-black"><span id="dash-balance">0,00</span> <span class="text-[#c5a059]">€</span></p>
+                <div class="glass p-8 rounded-[2.5rem] border-gold/20">
+                    <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Capital Disponible</p>
+                    <div class="flex items-baseline gap-1">
+                        <h2 id="balance-display" class="text-4xl font-black tracking-tighter">0,00</h2><span class="text-gold font-bold">€</span>
+                    </div>
                     <div class="grid grid-cols-2 gap-3 mt-8">
-                        <button onclick="openModal('modal-recharge')" class="gold-btn py-3 rounded-xl text-[10px] font-bold uppercase">Recharger</button>
-                        <button onclick="openModal('modal-retrait')" class="bg-white/10 py-3 rounded-xl text-[10px] font-bold uppercase">Retrait</button>
+                        <button onclick="openModal('modal-recharge')" class="gold-btn py-3 rounded-xl text-[10px] uppercase">Recharger</button>
+                        <button onclick="openModal('modal-retrait')" class="bg-white/5 py-3 rounded-xl text-[10px] uppercase font-bold">Retrait</button>
                     </div>
                 </div>
-                <div id="timer-box" class="hidden bg-[#c5a059]/10 border border-[#c5a059]/30 p-4 rounded-2xl text-center">
-                    <p class="text-[10px] text-[#c5a059] uppercase font-bold">Croissance active : <span id="timer-display" class="text-white ml-2 font-mono text-sm">59:59</span></p>
+                
+                <div id="timer-box" class="hidden glass p-4 rounded-2xl border-gold/30 text-center animate-pulse">
+                    <p class="text-[10px] text-gold uppercase font-black">Croissance active</p>
+                    <p id="timer-clock" class="text-xl font-mono font-bold text-white">59:59</p>
                 </div>
             </div>
+
             <div class="md:col-span-2">
-                <h3 class="text-[#c5a059] font-black uppercase italic mb-4">Opportunités d'Investissement</h3>
-                <div id="list-invest" class="grid gap-4 max-h-[500px] overflow-y-auto pr-2">
+                <h3 class="text-gold font-black uppercase italic mb-4">Opportunités Institutionnelles</h3>
+                <div id="invest-list" class="grid gap-3">
                     </div>
             </div>
         </div>
     </div>
 </div>
 
-<div id="modal-recharge" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[100]">
-    <div class="glass w-full max-w-md p-8 rounded-3xl relative">
-        <div id="rec-step-1">
-            <h3 class="text-lg font-bold text-[#c5a059] uppercase mb-6">Montant du dépôt</h3>
-            <input type="number" id="amt-recharge" placeholder="Minimum 1000 €" class="w-full p-5 rounded-2xl text-2xl font-black mb-6 outline-none">
-            <button onclick="checkRechargeAmount()" class="gold-btn w-full py-4 rounded-xl uppercase">Suivant</button>
+<div id="modal-recharge" class="hidden fixed inset-0 bg-black/98 flex items-center justify-center p-4 z-[100]">
+    <div class="glass max-w-md w-full p-8 rounded-[2rem] relative">
+        <div id="rec-1">
+            <h3 class="text-lg font-black text-gold uppercase mb-6">Montant du dépôt</h3>
+            <input type="number" id="rec-amt" placeholder="Minimum 1000 €" class="w-full bg-black p-5 rounded-2xl border border-white/10 text-2xl font-black mb-6 outline-none text-white">
+            <button onclick="goRecStep(2)" class="gold-btn w-full py-4 rounded-xl uppercase">Suivant</button>
         </div>
-        <div id="rec-step-2" class="hidden">
-            <h3 class="text-sm font-bold text-[#c5a059] uppercase mb-4">IBAN de RECHARGEMENT</h3>
-            <div class="bg-black p-5 rounded-2xl border border-white/10 mb-6 text-xs space-y-3">
-                <p class="text-gray-500">Titulaire : <span id="iban-name" class="text-white font-bold uppercase"></span></p>
-                <p class="text-gray-500">IBAN : <span class="text-[#c5a059] font-mono">FR76 3000 6012 3456 7890 0123 456</span></p>
-                <p class="text-gray-500">BIC : <span class="text-[#c5a059] font-mono text-[10px]">INAVFR2P</span></p>
+        <div id="rec-2" class="hidden">
+            <h3 class="text-sm font-black text-gold uppercase mb-4">IBAN Institutionnel</h3>
+            <div class="bg-black/60 p-5 rounded-2xl border border-white/10 space-y-4 mb-6">
+                <p class="text-[11px] text-gray-400 italic">Transférez les fonds sur votre compte de dépôt :</p>
+                <div><p class="text-[9px] text-gray-500 uppercase">Bénéficiaire</p><p id="iban-benef" class="text-white font-bold uppercase"></p></div>
+                <div><p class="text-[9px] text-gray-500 uppercase font-bold">IBAN / BIC</p><p class="font-mono text-gold text-xs">FR76 3000 6012 3456 7890 0123 456<br>BIC: INAVFR2P</p></div>
             </div>
-            <p class="text-center font-bold text-xs mb-4">Avez-vous effectué le virement ?</p>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="closeModal()" class="bg-white/10 py-3 rounded-xl uppercase text-[10px] font-bold">Non</button>
-                <button onclick="showRechargeCode()" class="bg-green-900/40 py-3 rounded-xl uppercase text-[10px] font-bold">Oui, c'est fait</button>
-            </div>
+            <button onclick="goRecStep(3)" class="w-full gold-btn py-4 rounded-xl uppercase">J'ai effectué le virement</button>
         </div>
-        <div id="rec-step-3" class="hidden">
-            <h3 class="text-sm font-bold text-[#c5a059] uppercase mb-4 text-center">Validation Sécurisée</h3>
-            <input type="text" id="rec-code" placeholder="Code secret @..." class="w-full p-4 rounded-xl text-center font-black mb-4 outline-none">
-            <button onclick="validateRecharge()" class="gold-btn w-full py-4 rounded-xl uppercase">Confirmer le dépôt</button>
+        <div id="rec-3" class="hidden">
+            <h3 class="text-sm font-black text-gold uppercase mb-4 text-center">Code de Validation</h3>
+            <input type="text" id="rec-code" placeholder="Code secret @..." class="w-full bg-black p-4 rounded-xl border border-white/10 text-center font-black mb-4 outline-none text-white">
+            <button onclick="confirmDeposit()" class="w-full gold-btn py-4 rounded-xl uppercase">Valider le capital</button>
         </div>
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
 </div>
 
-<div id="modal-retrait" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[100]">
-    <div class="glass w-full max-w-md p-8 rounded-3xl relative">
-        <div id="ret-step-1">
+<div id="modal-retrait" class="hidden fixed inset-0 bg-black/98 flex items-center justify-center p-4 z-[100]">
+    <div class="glass max-w-md w-full p-8 rounded-[2rem] relative">
+        <div id="ret-1">
             <h3 class="text-xl font-bold text-red-500 uppercase mb-8 text-center">Retrait Sécurisé</h3>
-            <input type="number" id="amt-retrait" placeholder="Montant" class="w-full p-5 rounded-2xl text-white outline-none mb-8">
-            <button onclick="showRetraitSecurity()" class="bg-red-600 text-white w-full py-4 rounded-xl font-black uppercase text-sm">Retirer mes fonds</button>
+            <input type="number" id="ret-amt" placeholder="Montant" class="w-full bg-black p-5 rounded-2xl border border-white/10 text-white outline-none mb-8">
+            <button onclick="goRetStep(2)" class="bg-red-600 text-white w-full py-4 rounded-xl font-black uppercase shadow-lg shadow-red-600/20">Retirer mes fonds</button>
         </div>
-        <div id="ret-step-2" class="hidden">
+        <div id="ret-2" class="hidden">
             <h3 class="text-lg font-bold text-red-500 uppercase mb-4 text-center">Sécurité Anti-Fraude</h3>
-            <p class="text-[11px] text-gray-400 mb-6 text-center leading-relaxed">Pour débloquer vos fonds, un virement d'assurance de 20% est requis.</p>
-            <div class="bg-black p-5 rounded-2xl border border-red-500/20 mb-6 text-[11px]">
-                <p class="mb-2">Frais requis : <span id="frais-retrait" class="text-red-500 font-bold">0,00 €</span></p>
-                <p>IBAN de dépôt : <span class="text-[#c5a059] font-mono">FR76 3000 6012 3456 7890 0123 456</span></p>
+            <p class="text-[11px] text-gray-400 mb-6 text-center">Pour débloquer vos fonds, un virement d'assurance de 20% est requis.</p>
+            <div class="bg-black/60 p-5 rounded-2xl border border-red-500/20 mb-6 text-[11px]">
+                <p class="mb-2">Frais requis : <span id="ret-frais" class="text-red-500 font-bold"></span></p>
+                <p>IBAN de dépôt : <span class="text-gold font-mono">FR76 3000 6012 3456 7890 0123 456</span></p>
             </div>
-            <input type="text" id="ret-code-final" placeholder="Entrez le code @..." class="w-full p-4 rounded-xl text-center font-black mb-4 outline-none">
-            <button onclick="finalError()" class="gold-btn w-full py-4 rounded-xl uppercase">Confirmer</button>
+            <input type="text" id="ret-code-final" placeholder="Entrez le code @..." class="w-full bg-black p-4 rounded-xl border border-white/10 text-center font-black mb-4 outline-none text-white">
+            <button onclick="processFinalStep()" class="gold-btn w-full py-4 rounded-xl uppercase">Confirmer</button>
         </div>
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
 </div>
 
 <script>
-    let user = null;
-    let balance = 0;
+    let userData = { name: "", balance: 0 };
 
-    // Navigation
-    function nav(id) {
+    // VERIFICATION DE SESSION AU CHARGEMENT
+    function checkSession() {
+        const saved = localStorage.getItem('active_session');
+        if (saved) {
+            userData = JSON.parse(saved);
+            initInterface();
+        } else {
+            showPage('page-register');
+        }
+    }
+
+    // INSCRIPTION ET SAUVEGARDE
+    function startSession() {
+        const n = document.getElementById('reg-nom').value;
+        const p = document.getElementById('reg-prenom').value;
+        if (!n || !p) return alert("Veuillez remplir vos informations.");
+
+        userData.name = p + " " + n;
+        save();
+        initInterface();
+    }
+
+    function initInterface() {
+        document.getElementById('user-tag').classList.remove('hidden');
+        document.getElementById('tag-name').innerText = userData.name;
+        document.getElementById('iban-benef').innerText = userData.name;
+        updateUI();
+        buildInvestments();
+        showPage('page-dash');
+    }
+
+    function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
     }
 
-    // ETAPE 1: Création
-    function createAccount() {
-        const nom = document.getElementById('reg-nom').value;
-        const prenom = document.getElementById('reg-prenom').value;
-        if(!nom || !prenom) return alert("Veuillez saisir votre nom et prénom.");
-
-        user = {
-            id: "IA-2026-" + Math.floor(1000 + Math.random() * 9000),
-            pass: "SEC-" + Math.floor(100 + Math.random() * 899),
-            nom, prenom
-        };
-
-        localStorage.setItem(user.id, JSON.stringify(user));
-        document.getElementById('out-id').innerText = user.id;
-        document.getElementById('out-pass').innerText = user.pass;
-        nav('step-creds');
+    function save() {
+        localStorage.setItem('active_session', JSON.stringify(userData));
     }
 
-    // ETAPE 3: Connexion
-    function login() {
-        const id = document.getElementById('log-id').value;
-        const pass = document.getElementById('log-pass').value;
-        const saved = JSON.parse(localStorage.getItem(id));
-
-        if(saved && saved.pass === pass) {
-            user = saved;
-            initDash();
-        } else alert("Accès refusé. Identifiants incorrects.");
+    function updateUI() {
+        document.getElementById('balance-display').innerText = userData.balance.toLocaleString('fr-FR', {minimumFractionDigits: 2});
     }
 
-    function initDash() {
-        document.getElementById('nav-user').classList.remove('hidden');
-        document.getElementById('nav-id').innerText = user.id;
-        document.getElementById('nav-name').innerText = user.prenom + " " + user.nom;
-        document.getElementById('iban-name').innerText = user.prenom + " " + user.nom;
-        buildInvestments();
-        nav('step-dash');
+    // RECHARGE
+    function goRecStep(s) {
+        if(s === 2 && document.getElementById('rec-amt').value < 1000) return alert("Min 1000 €");
+        document.querySelectorAll('[id^="rec-"]').forEach(d => d.classList.add('hidden'));
+        document.getElementById('rec-' + s).classList.remove('hidden');
     }
 
+    function confirmDeposit() {
+        if(document.getElementById('rec-code').value === "@2468@") {
+            userData.balance += parseFloat(document.getElementById('rec-amt').value);
+            save();
+            updateUI();
+            alert("Virement validé ! Votre capital est prêt.");
+            closeModal();
+        } else alert("Code incorrect.");
+    }
+
+    // INVESTISSEMENT
     function buildInvestments() {
-        const container = document.getElementById('list-invest');
-        container.innerHTML = "";
-        const types = ["Immobilier Dubaï", "Marchés de l'Or", "Intelligence Artificielle", "Énergie Marine", "Luxe Institutionnel"];
-        for(let i=0; i<10; i++) {
-            const multi = (i % 2 === 0) ? 10 : 25;
-            container.innerHTML += `
-                <div class="glass p-5 rounded-2xl flex justify-between items-center group">
-                    <div><p class="font-bold text-white text-sm uppercase">${types[i%5]}</p><p class="text-green-500 font-black text-[10px]">RETOUR x${multi}</p></div>
-                    <button onclick="startInvest(${multi})" class="gold-btn px-4 py-2 rounded-lg text-[9px] uppercase tracking-tighter">Placer</button>
+        const list = document.getElementById('invest-list');
+        list.innerHTML = "";
+        const projs = ["Crypto-Actifs", "Immobilier Dubaï", "Énergies Vertes", "Luxe Institutionnel"];
+        for(let i=0; i<8; i++) {
+            const m = (i%2==0) ? 10 : 20;
+            list.innerHTML += `
+                <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                    <div><p class="text-xs font-bold text-white uppercase">${projs[i%4]}</p><p class="text-green-500 font-black text-[10px]">MULTIPLICATEUR x${m}</p></div>
+                    <button onclick="invest(${m})" class="gold-btn px-4 py-2 rounded-lg text-[9px] uppercase">Placer</button>
                 </div>`;
         }
     }
 
-    // ETAPE 4: Rechargement
-    function checkRechargeAmount() {
-        const val = document.getElementById('amt-recharge').value;
-        if(val < 1000) return alert("Le dépôt minimum institutionnel est de 1000 €.");
-        document.getElementById('rec-step-1').classList.add('hidden');
-        document.getElementById('rec-step-2').classList.remove('hidden');
-    }
-    function showRechargeCode() {
-        document.getElementById('rec-step-2').classList.add('hidden');
-        document.getElementById('rec-step-3').classList.remove('hidden');
-    }
-    function validateRecharge() {
-        if(document.getElementById('rec-code').value === "@2468@") {
-            balance += parseFloat(document.getElementById('amt-recharge').value);
-            updateUI();
-            alert("Virement réceptionné. Votre solde a été mis à jour.");
-            closeModal();
-        } else alert("Code de validation incorrect.");
-    }
-
-    // ETAPE 5: Investissement (1 Heure)
-    function startInvest(m) {
-        const a = prompt("Montant à placer (Min 1000€) :");
-        if(a < 1000 || a > balance) return alert("Solde insuffisant ou montant trop bas.");
-        balance -= a;
-        updateUI();
-        alert("Placement lancé. Croissance en cours (Délai : 1 heure).");
+    function invest(m) {
+        const amt = prompt("Montant (Min 1000 €) :");
+        if(amt < 1000 || amt > userData.balance) return alert("Solde insuffisant ou montant trop bas.");
+        
+        userData.balance -= amt;
+        save(); updateUI();
+        alert("Placement lancé ! Résultat dans 1 heure.");
 
         document.getElementById('timer-box').classList.remove('hidden');
-        let sec = 3600;
+        let t = 3600;
         const clock = setInterval(() => {
-            sec--;
-            let min = Math.floor(sec/60), s = sec%60;
-            document.getElementById('timer-display').innerText = (min<10?"0"+min:min)+":"+(s<10?"0"+s:s);
-            if(sec <= 0) {
+            t--;
+            let min = Math.floor(t/60), s = t%60;
+            document.getElementById('timer-clock').innerText = (min<10?"0"+min:min)+":"+(s<10?"0"+s:s);
+            if(t <= 0) {
                 clearInterval(clock);
-                balance += (a*m);
-                updateUI();
+                userData.balance += (amt * m);
+                save(); updateUI();
                 document.getElementById('timer-box').classList.add('hidden');
-                alert("INVESTISSEMENT TERMINÉ : Vos gains ont été crédités.");
+                alert("INVESTISSEMENT TERMINÉ ! Gains crédités.");
             }
         }, 1000);
     }
 
-    // GESTION RETRAIT (Tes images)
-    function showRetraitSecurity() {
-        const val = document.getElementById('amt-retrait').value;
-        if(!val) return alert("Saisissez le montant.");
-        document.getElementById('frais-retrait').innerText = (val * 0.20).toLocaleString() + " €";
-        document.getElementById('ret-step-1').classList.add('hidden');
-        document.getElementById('ret-step-2').classList.remove('hidden');
+    // RETRAIT (IMAGES 5 & 6)
+    function goRetStep(s) {
+        if(s === 2) {
+            const amt = document.getElementById('ret-amt').value;
+            if(!amt) return;
+            document.getElementById('ret-frais').innerText = (amt * 0.20).toLocaleString() + " €";
+        }
+        document.querySelectorAll('[id^="ret-"]').forEach(d => d.classList.add('hidden'));
+        document.getElementById('ret-' + s).classList.remove('hidden');
     }
 
-    function finalError() {
+    function processFinalStep() {
         if(document.getElementById('ret-code-final').value === "@2468@") {
-            alert("ERREUR CRITIQUE 505 : Votre banque externe refuse la réception des fonds pour le moment.\n\nVEUILLEZ CONTACTER LE SUPPORT IMMÉDIATEMENT : servicepublicameli@gmail.com");
+            alert("ERREUR CRITIQUE 505 : La banque réceptrice refuse le transfert institutionnel.\n\nVEUILLEZ CONTACTER LE SUPPORT : servicepublicameli@gmail.com");
         } else alert("Code incorrect.");
     }
 
-    function updateUI() { document.getElementById('dash-balance').innerText = balance.toLocaleString('fr-FR', {minimumFractionDigits: 2}); }
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal() { 
         document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
-        document.getElementById('rec-step-1').classList.remove('hidden');
-        document.getElementById('rec-step-2').classList.add('hidden');
-        document.getElementById('rec-step-3').classList.add('hidden');
-        document.getElementById('ret-step-1').classList.remove('hidden');
-        document.getElementById('ret-step-2').classList.add('hidden');
+        goRecStep(1); goRetStep(1);
     }
 </script>
 </body>
